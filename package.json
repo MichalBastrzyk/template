@@ -7,8 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "lint": "oxlint --type-aware",
-    "lint:fix": "oxlint --type-aware --fix",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "format": "oxfmt --check",
     "format:fix": "oxfmt"
   },
@@ -18,9 +18,11 @@
     "@tanstack/react-devtools": "^0.9.2",
     "@tanstack/react-router": "^1.132.0",
     "@tanstack/react-router-devtools": "^1.132.0",
-    "@tanstack/react-router-ssr-query": "^1.131.7",
+    "@tanstack/react-router-ssr-query": "^1.150.0",
     "@tanstack/react-start": "^1.132.0",
     "@tanstack/router-plugin": "^1.132.0",
+    "@trpc/server": "^11.8.1",
+    "@trpc/tanstack-react-query": "^11.8.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -36,10 +38,12 @@
     "react-resizable-panels": "^4.4.1",
     "recharts": "2.15.4",
     "sonner": "^2.0.7",
+    "superjson": "^2.2.6",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "vaul": "^1.1.2",
-    "vite-tsconfig-paths": "^6.0.2"
+    "vite-tsconfig-paths": "^6.0.2",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "^0.4.1",

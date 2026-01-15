@@ -1,11 +1,25 @@
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
 
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import appCss from "../styles/app.css?url";
 
-export const Route = createRootRoute({
+import type { QueryClient } from "@tanstack/react-query";
+
+import type { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
+import type { AppRouter } from "@/server/api/root";
+
+interface MyRouterContext {
+  queryClient: QueryClient;
+  trpc: TRPCOptionsProxy<AppRouter>;
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
