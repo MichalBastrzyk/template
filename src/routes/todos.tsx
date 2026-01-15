@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,6 +17,14 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { useTRPC } from "@/trpc/react";
@@ -44,7 +52,6 @@ function RouteComponent() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const todoQueryOptions = trpc.todo.list.queryOptions();
-
   const {
     data: todos = [],
     isLoading,
@@ -60,6 +67,10 @@ function RouteComponent() {
   const isMutating = useIsMutating({ mutationKey: trpc.todo.pathKey() }) > 0;
 
   const [title, setTitle] = React.useState("");
+  const [emailOpen, setEmailOpen] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [senderName, setSenderName] = React.useState("");
+  const [recipientName, setRecipientName] = React.useState("");
 
   const list = React.useMemo(() => {
     return [...todos].sort((a, b) => {
@@ -157,6 +168,16 @@ function RouteComponent() {
     },
   });
 
+  const emailMutation = useMutation({
+    ...trpc.todo.emailTodos.mutationOptions(),
+    onSuccess: () => {
+      setEmail("");
+      setSenderName("");
+      setRecipientName("");
+      setEmailOpen(false);
+    },
+  });
+
   const remaining = list.filter((todo) => !todo.completed).length;
   const completed = list.length - remaining;
 
@@ -167,6 +188,20 @@ function RouteComponent() {
     if (!trimmed) return;
 
     createMutation.mutate({ title: trimmed });
+  };
+
+  const handleSendEmail = () => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || emailMutation.isPending) return;
+
+    const trimmedSender = senderName.trim();
+    const trimmedRecipient = recipientName.trim();
+
+    emailMutation.mutate({
+      email: trimmedEmail,
+      senderName: trimmedSender ? trimmedSender : undefined,
+      recipientName: trimmedRecipient ? trimmedRecipient : undefined,
+    });
   };
 
   return (
@@ -214,16 +249,94 @@ function RouteComponent() {
                 Press enter to add instantly.
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button type="submit">Add todo</Button>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setTitle("")}
-                disabled={!title}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Button type="submit">Add todo</Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setTitle("")}
+                  disabled={!title}
+                >
+                  Clear
+                </Button>
+              </div>
+              <Popover
+                open={emailOpen}
+                onOpenChange={(open) => {
+                  setEmailOpen(open);
+                  if (open) {
+                    emailMutation.reset();
+                  }
+                }}
               >
-                Clear
-              </Button>
+                <PopoverTrigger
+                  type="button"
+                  className={buttonVariants({ variant: "outline" })}
+                >
+                  Share via email
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <PopoverHeader>
+                    <PopoverTitle>Send this list</PopoverTitle>
+                    <PopoverDescription>
+                      Share all todos in a quick email.
+                    </PopoverDescription>
+                  </PopoverHeader>
+                  <div className="grid gap-2">
+                    <label className="text-xs font-medium">
+                      Recipient email
+                    </label>
+                    <Input
+                      type="email"
+                      placeholder="name@company.com"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label className="text-xs font-medium">Your name</label>
+                    <Input
+                      placeholder="Optional"
+                      value={senderName}
+                      onChange={(event) => setSenderName(event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label className="text-xs font-medium">
+                      Recipient name
+                    </label>
+                    <Input
+                      placeholder="Optional"
+                      value={recipientName}
+                      onChange={(event) => setRecipientName(event.target.value)}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Button
+                      type="button"
+                      onClick={handleSendEmail}
+                      disabled={!email.trim() || emailMutation.isPending}
+                    >
+                      {emailMutation.isPending ? "Sending..." : "Send email"}
+                    </Button>
+                    <span
+                      className={cn(
+                        "text-xs",
+                        emailMutation.isError
+                          ? "text-destructive"
+                          : "text-muted-foreground",
+                      )}
+                    >
+                      {emailMutation.isError
+                        ? "Failed to send"
+                        : emailMutation.isSuccess
+                          ? "Sent"
+                          : ""}
+                    </span>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </form>
         </CardContent>
