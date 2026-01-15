@@ -1,8 +1,11 @@
+import { db } from "@/server/db/client";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-export const createTRPCContext = async () => {};
+export const createTRPCContext = async () => ({
+  db,
+});
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
