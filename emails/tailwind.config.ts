@@ -3,27 +3,27 @@ import type { Config } from "tailwindcss";
 
 const colors = {
   background: "#FFFFFF",
-  foreground: "#0C0A09",
+  foreground: "#0A0A0A",
   destructive: "#E7000B",
-  border: "#E7E5E4",
-  input: "#E7E5E4",
-  ring: "#A6A09B",
+  border: "#E5E5E5",
+  input: "#E5E5E5",
+  ring: "#A1A1A1",
 
   primary: {
-    DEFAULT: "#1C1917",
-    foreground: "#FAFAF9",
+    DEFAULT: "#171717",
+    foreground: "#FAFAFA",
   },
   secondary: {
-    DEFAULT: "#F5F5F4",
-    foreground: "#1C1917",
+    DEFAULT: "#F5F5F5",
+    foreground: "#171717",
   },
   muted: {
-    DEFAULT: "#F5F5F4",
-    foreground: "#79716B",
+    DEFAULT: "#F5F5F5",
+    foreground: "#737373",
   },
   accent: {
-    DEFAULT: "#F5F5F4",
-    foreground: "#1C1917",
+    DEFAULT: "#F5F5F5",
+    foreground: "#171717",
   },
 } as const;
 
