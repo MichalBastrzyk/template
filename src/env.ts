@@ -9,6 +9,8 @@ export const env = createEnv({
 
     DATABASE_URL: z.url(),
 
+    BETTER_AUTH_SECRET: z.string().min(1),
+
     // S3-compatible storage configuration
     S3_ENDPOINT: z.url(),
     S3_REGION: z.string().default("auto"),

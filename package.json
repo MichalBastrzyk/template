@@ -11,7 +11,10 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt --check",
     "format:fix": "oxfmt",
-    "email:dev": "email dev --dir emails --port 3001"
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "email:dev": "email dev --dir emails --port 3001",
+    "auth:generate": "bunx @better-auth/cli generate --output src/server/db/schema/auth.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.970.0",
@@ -30,6 +33,7 @@
     "@trpc/server": "^11.8.1",
     "@trpc/tanstack-react-query": "^11.8.1",
     "@types/nodemailer": "^7.0.5",
+    "better-auth": "^1.4.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

@@ -1,5 +1,5 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { todosTable } from "@/server/db/schema";
+import { todosTable } from "@/server/db/schema/todos";
 import { emailClient } from "@/server/email";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
