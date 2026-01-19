@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { todosTable, todoImagesTable } from "@/server/db/schema/todos";
 import { emailClient } from "@/server/email";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { UPLOAD_CONFIG } from "@/config";
@@ -10,7 +10,47 @@ import TodosEmail from "../../../../emails/todos-email";
 
 export const todosRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.select().from(todosTable);
+    const todos = await ctx.db
+      .select({
+        id: todosTable.id,
+        title: todosTable.title,
+        completed: todosTable.completed,
+        createdAt: todosTable.createdAt,
+        images: {
+          id: todoImagesTable.id,
+          filename: todoImagesTable.filename,
+          filePath: todoImagesTable.filePath,
+          fileSize: todoImagesTable.fileSize,
+          contentType: todoImagesTable.contentType,
+          width: todoImagesTable.width,
+          height: todoImagesTable.height,
+          createdAt: todoImagesTable.createdAt,
+        },
+      })
+      .from(todosTable)
+      .leftJoin(todoImagesTable, eq(todosTable.id, todoImagesTable.todoId))
+      .orderBy(desc(todosTable.createdAt));
+
+    // Group images by todo
+    const todosWithImages = todos.reduce<
+      Record<number, typeof todos[0] & { images: (typeof todos[0].images)[] }>
+    >((acc, row) => {
+      if (!acc[row.id]) {
+        acc[row.id] = {
+          id: row.id,
+          title: row.title,
+          completed: row.completed,
+          createdAt: row.createdAt,
+          images: [],
+        };
+      }
+      if (row.images.id) {
+        acc[row.id].images.push(row.images);
+      }
+      return acc;
+    }, {});
+
+    return Object.values(todosWithImages);
   }),
   create: publicProcedure
     .input(z.object({ title: z.string() }))
