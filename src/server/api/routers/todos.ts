@@ -135,4 +135,14 @@ export const todosRouter = createTRPCRouter({
 
       return image;
     }),
+
+  deleteImage: publicProcedure
+    .input(z.object({ imageId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(todoImagesTable)
+        .where(eq(todoImagesTable.id, input.imageId));
+
+      return { success: true };
+    }),
 });
