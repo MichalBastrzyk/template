@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   Carousel,
@@ -11,11 +12,10 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  type CarouselApi,
 } from "@/components/ui/carousel";
+import useEmblaCarousel from "embla-carousel-react";
 import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface TodoImage {
   id: number;
@@ -39,7 +39,7 @@ export function ImageCarouselDialog({
   images,
   startIndex,
 }: ImageCarouselDialogProps) {
-  const [api, setApi] = React.useState<CarouselApi>();
+  const [api, setApi] = React.useState<ReturnType<typeof useEmblaCarousel>[1]>();
   const [current, setCurrent] = React.useState(0);
 
   React.useEffect(() => {
@@ -49,11 +49,6 @@ export function ImageCarouselDialog({
     api.scrollTo(startIndex, true);
   }, [api, startIndex]);
 
-  const handleSelect = React.useCallback((api: CarouselApi) => {
-    if (!api) return;
-    setCurrent(api.selectedScrollSnap());
-  }, []);
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
@@ -61,11 +56,11 @@ export function ImageCarouselDialog({
           <DialogTitle className="text-sm">
             {images.length} image{images.length !== 1 ? "s" : ""}
           </DialogTitle>
-          <DialogHeader.Close asChild>
+          <DialogClose>
             <Button variant="ghost" size="icon-sm" className="rounded-full">
               <XIcon />
             </Button>
-          </DialogHeader.Close>
+          </DialogClose>
         </DialogHeader>
 
         <Carousel
@@ -75,7 +70,6 @@ export function ImageCarouselDialog({
             align: "center",
             loop: true,
           }}
-          onSelect={handleSelect}
         >
           <CarouselContent>
             {images.map((image, index) => (
