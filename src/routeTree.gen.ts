@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodosRouteImport } from './routes/todos'
+import { Route as Api_images__path_RouteImport } from './routes/api_images__path__'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
@@ -17,11 +18,18 @@ import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignOutRouteImport } from './routes/auth/sign-out'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
+import { Route as ApiImagesSplatRouteImport } from './routes/api/images/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as ApiImagesChar91DotPathChar93RouteImport } from './routes/api/images/[...path]'
 
 const TodosRoute = TodosRouteImport.update({
   id: '/todos',
   path: '/todos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Api_images__path_Route = Api_images__path_RouteImport.update({
+  id: '/api_images__path__',
+  path: '/api_images__path_',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -59,88 +67,120 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   path: '/api/trpc/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiImagesSplatRoute = ApiImagesSplatRouteImport.update({
+  id: '/api/images/$',
+  path: '/api/images/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiImagesChar91DotPathChar93Route =
+  ApiImagesChar91DotPathChar93RouteImport.update({
+    id: '/api/images/[./path]',
+    path: '/api/images/[./path]',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/api_images__path_': typeof Api_images__path_Route
   '/todos': typeof TodosRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-out': typeof AuthSignOutRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/images/$': typeof ApiImagesSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/api/images/[./path]': typeof ApiImagesChar91DotPathChar93Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/api_images__path_': typeof Api_images__path_Route
   '/todos': typeof TodosRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-out': typeof AuthSignOutRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/images/$': typeof ApiImagesSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/api/images/[./path]': typeof ApiImagesChar91DotPathChar93Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/api_images__path__': typeof Api_images__path_Route
   '/todos': typeof TodosRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-out': typeof AuthSignOutRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/images/$': typeof ApiImagesSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/api/images/[./path]': typeof ApiImagesChar91DotPathChar93Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/api_images__path_'
     | '/todos'
     | '/auth/sign-in'
     | '/auth/sign-out'
     | '/auth/sign-up'
     | '/auth/verify-email'
     | '/api/auth/$'
+    | '/api/images/$'
     | '/api/trpc/$'
+    | '/api/images/[./path]'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/api_images__path_'
     | '/todos'
     | '/auth/sign-in'
     | '/auth/sign-out'
     | '/auth/sign-up'
     | '/auth/verify-email'
     | '/api/auth/$'
+    | '/api/images/$'
     | '/api/trpc/$'
+    | '/api/images/[./path]'
   id:
     | '__root__'
     | '/'
     | '/auth'
+    | '/api_images__path__'
     | '/todos'
     | '/auth/sign-in'
     | '/auth/sign-out'
     | '/auth/sign-up'
     | '/auth/verify-email'
     | '/api/auth/$'
+    | '/api/images/$'
     | '/api/trpc/$'
+    | '/api/images/[./path]'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  Api_images__path_Route: typeof Api_images__path_Route
   TodosRoute: typeof TodosRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiImagesSplatRoute: typeof ApiImagesSplatRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
+  ApiImagesChar91DotPathChar93Route: typeof ApiImagesChar91DotPathChar93Route
 }
 
 declare module '@tanstack/react-router' {
@@ -150,6 +190,13 @@ declare module '@tanstack/react-router' {
       path: '/todos'
       fullPath: '/todos'
       preLoaderRoute: typeof TodosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api_images__path__': {
+      id: '/api_images__path__'
+      path: '/api_images__path_'
+      fullPath: '/api_images__path_'
+      preLoaderRoute: typeof Api_images__path_RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -201,11 +248,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTrpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/images/$': {
+      id: '/api/images/$'
+      path: '/api/images/$'
+      fullPath: '/api/images/$'
+      preLoaderRoute: typeof ApiImagesSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/images/[./path]': {
+      id: '/api/images/[./path]'
+      path: '/api/images/[./path]'
+      fullPath: '/api/images/[./path]'
+      preLoaderRoute: typeof ApiImagesChar91DotPathChar93RouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -232,9 +293,12 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  Api_images__path_Route: Api_images__path_Route,
   TodosRoute: TodosRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiImagesSplatRoute: ApiImagesSplatRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
+  ApiImagesChar91DotPathChar93Route: ApiImagesChar91DotPathChar93Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

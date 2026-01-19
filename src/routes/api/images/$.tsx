@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { env } from "@/env";
 
-export const Route = createFileRoute("/api/images/[./path]")({
+export const Route = createFileRoute("/api/images/$")({
   loader: async ({ params }) => {
     const path = params._;
 
