@@ -1,5 +1,5 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { todosTable } from "@/server/db/schema/todos";
+import { todosTable, todoImagesTable } from "@/server/db/schema/todos";
 import { emailClient } from "@/server/email";
 import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -105,5 +105,34 @@ export const todosRouter = createTRPCRouter({
       });
 
       return result;
+    }),
+
+  attachImageToTodo: publicProcedure
+    .input(
+      z.object({
+        todoId: z.number(),
+        filePath: z.string(),
+        filename: z.string(),
+        fileSize: z.number(),
+        contentType: z.string(),
+        width: z.number(),
+        height: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const [image] = await ctx.db
+        .insert(todoImagesTable)
+        .values({
+          todoId: input.todoId,
+          filename: input.filename,
+          filePath: input.filePath,
+          fileSize: input.fileSize,
+          contentType: input.contentType,
+          width: input.width,
+          height: input.height,
+        })
+        .returning();
+
+      return image;
     }),
 });
