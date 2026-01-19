@@ -38,6 +38,9 @@ import {
 } from "@tanstack/react-query";
 import { CheckCircle2Icon, ListTodoIcon, Trash2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ImageUploadButton } from "@/components/image-upload-button";
+import { TodoImageGallery } from "@/components/todo-image-gallery";
+import { ImageCarouselDialog } from "@/components/image-carousel-dialog";
 
 export const Route = createFileRoute("/todos")({
   loader: async ({ context }) => {
@@ -71,6 +74,11 @@ function RouteComponent() {
   const [email, setEmail] = React.useState("");
   const [senderName, setSenderName] = React.useState("");
   const [recipientName, setRecipientName] = React.useState("");
+  const [selectedTodoImages, setSelectedTodoImages] = React.useState<{
+    todoId: number;
+    images: typeof todos[number]["images"];
+    startIndex: number;
+  } | null>(null);
 
   const list = React.useMemo(() => {
     return [...todos].sort((a, b) => {
@@ -202,6 +210,14 @@ function RouteComponent() {
       senderName: trimmedSender ? trimmedSender : undefined,
       recipientName: trimmedRecipient ? trimmedRecipient : undefined,
     });
+  };
+
+  const handleImageClick = (todoId: number, images: typeof todos[number]["images"], index: number) => {
+    setSelectedTodoImages({ todoId, images, startIndex: index });
+  };
+
+  const handleUploadComplete = () => {
+    queryClient.invalidateQueries({ queryKey });
   };
 
   return (
@@ -386,16 +402,16 @@ function RouteComponent() {
                     key={todo.id}
                     className="group flex items-center justify-between gap-3 rounded-lg border border-transparent px-2 py-2 transition hover:border-border/60 hover:bg-muted/40"
                   >
-                    <label className="flex flex-1 items-start gap-3">
-                      <Checkbox
-                        checked={todo.completed}
-                        onCheckedChange={(value) =>
-                          statusMutation.mutate({
-                            id: todo.id,
-                            completed: Boolean(value),
-                          })
-                        }
-                      />
+                    <Checkbox
+                      checked={todo.completed}
+                      onCheckedChange={(value) =>
+                        statusMutation.mutate({
+                          id: todo.id,
+                          completed: Boolean(value),
+                        })
+                      }
+                    />
+                    <div className="flex flex-1 flex-col gap-2">
                       <span className="flex flex-1 flex-col gap-1">
                         <span
                           className={
@@ -412,8 +428,23 @@ function RouteComponent() {
                           {createdLabel}
                         </span>
                       </span>
-                    </label>
+
+                      {/* Add image gallery if todo has images */}
+                      {todo.images && todo.images.length > 0 && (
+                        <TodoImageGallery
+                          images={todo.images}
+                          onImageClick={(index) => handleImageClick(todo.id, todo.images, index)}
+                        />
+                      )}
+                    </div>
+
                     <div className="flex items-center gap-2">
+                      {/* Add upload button before delete button */}
+                      <ImageUploadButton
+                        todoId={todo.id}
+                        onUploadComplete={handleUploadComplete}
+                      />
+
                       {todo.completed && (
                         <CheckCircle2Icon className="size-4 text-primary" />
                       )}
@@ -440,8 +471,18 @@ function RouteComponent() {
               ? "Updating"
               : "All changes saved"}
           </span>
-        </CardFooter>
-      </Card>
-    </div>
+          </CardFooter>
+        </Card>
+
+        {/* Image carousel dialog */}
+        {selectedTodoImages && (
+          <ImageCarouselDialog
+            open={!!selectedTodoImages}
+            onOpenChange={(open) => !open && setSelectedTodoImages(null)}
+            images={selectedTodoImages.images}
+            startIndex={selectedTodoImages.startIndex}
+          />
+        )}
+      </div>
   );
 }
