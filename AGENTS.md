@@ -27,6 +27,7 @@ You are working in a modern, high-performance TypeScript stack. **Do not introdu
     - File-based routing. Use `__root.tsx` for layouts.
     - Use `$` for params (e.g., `users.$userId.tsx`).
     - Keep route files thin; delegate logic to components or hooks.
+    - **Dev Server Check**: Always verify the dev server is running before adding/modifying routes. Use `lsof -i :5173` (or appropriate port) to check.
 - **Server (`src/server/`)**:
     - `db/schema/`: Split schema files. **Always** define schema here.
     - `routers/`: tRPC routers.
