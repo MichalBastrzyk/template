@@ -72,6 +72,23 @@ You are working in a modern, high-performance TypeScript stack. **Do not introdu
 - **Do NOT** use `prisma` (we use Drizzle).
 - **Do NOT** use `axios` (use tRPC or standard `fetch` if strictly needed outside tRPC).
 - **Do NOT** inline SVG icons (use `lucide-react`).
+- **Do NOT** build custom UI components when Shadcn UI components are available.
+
+#### Component Usage Priority
+**ALWAYS** use components from `src/components/ui/` before building custom solutions. Available components include:
+- `accordion`, `alert-dialog`, `alert`, `aspect-ratio`, `avatar`
+- `badge`, `breadcrumb`, `button-group`, `button`, `calendar`, `card`
+- `carousel`, `chart`, `checkbox`, `collapsible`, `command`, `context-menu`
+- `dialog`, `drawer`, `dropdown-menu`, `empty`, `field`, `hover-card`
+- `input-group`, `input-otp`, `input`, `item`, `kbd`, `label`, `menubar`
+- `navigation-menu`, `pagination`, `popover`, `progress`, `radio-group`
+- `resizable`, `scroll-area`, `select`, `separator`, `sheet`, `sidebar`
+- `skeleton`, `slider`, `sonner`, `spinner`, `switch`, `table`, `tabs`
+- `textarea`, `toggle-group`, `toggle`, `tooltip`
+
+**Rule**: If a UI component exists in this list, you MUST use it instead of building a custom version. Custom components should only be created when:
+1. The required functionality doesn't exist in Shadcn UI
+2. You need to compose multiple Shadcn components together for a complex feature
 
 ---
 
