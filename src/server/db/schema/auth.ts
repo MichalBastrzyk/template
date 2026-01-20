@@ -1,7 +1,8 @@
 import { relations } from "drizzle-orm";
 import * as t from "drizzle-orm/pg-core";
 
-export const usersTable = t.pgTable("users", {
+// Better Auth expects singular names: user, session, account, verification
+export const user = t.pgTable("users", {
   id: t.text().primaryKey(),
   name: t.text().notNull(),
   email: t.text().notNull().unique(),
@@ -15,7 +16,7 @@ export const usersTable = t.pgTable("users", {
     .notNull(),
 });
 
-export const sessionsTable = t.pgTable(
+export const session = t.pgTable(
   "sessions",
   {
     id: t.text().primaryKey(),
@@ -31,12 +32,12 @@ export const sessionsTable = t.pgTable(
     userId: t
       .text()
       .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
   },
   (table) => [t.index("session_userId_idx").on(table.userId)],
 );
 
-export const accountsTable = t.pgTable(
+export const account = t.pgTable(
   "accounts",
   {
     id: t.text().primaryKey(),
@@ -45,7 +46,7 @@ export const accountsTable = t.pgTable(
     userId: t
       .text()
       .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     accessToken: t.text(),
     refreshToken: t.text(),
     idToken: t.text(),
@@ -62,7 +63,7 @@ export const accountsTable = t.pgTable(
   (table) => [t.index("account_userId_idx").on(table.userId)],
 );
 
-export const verificationsTable = t.pgTable(
+export const verification = t.pgTable(
   "verifications",
   {
     id: t.text().primaryKey(),
@@ -79,21 +80,21 @@ export const verificationsTable = t.pgTable(
   (table) => [t.index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const usersRelations = relations(usersTable, ({ many }) => ({
-  sessions: many(sessionsTable),
-  accounts: many(accountsTable),
+export const userRelations = relations(user, ({ many }) => ({
+  sessions: many(session),
+  accounts: many(account),
 }));
 
-export const sessionsRelations = relations(sessionsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [sessionsTable.userId],
-    references: [usersTable.id],
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
   }),
 }));
 
-export const accountsRelations = relations(accountsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [accountsTable.userId],
-    references: [usersTable.id],
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, {
+    fields: [account.userId],
+    references: [user.id],
   }),
 }));
