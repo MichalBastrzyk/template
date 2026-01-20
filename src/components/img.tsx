@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { useMemo } from "react";
 
 const imageWidths = [
@@ -17,25 +18,12 @@ const getVercelOptimizedUrl = (url: string, width: ImgWidth, quality = 75) => {
 
 interface ResponsiveImageOptions {
   src: string;
-  /** Intrinsic width of the source image */
   width: number;
-  /** Intrinsic height of the source image */
   height: number;
-  /**
-   * The sizes attribute for responsive images.
-   * @default "100vw"
-   * @example "(max-width: 768px) 100vw, 50vw"
-   */
   sizes?: string;
-  /** Image quality 1-100 @default 75 */
   quality?: number;
 }
 
-/**
- * Generates props for a responsive image with Vercel Image Optimization.
- * Uses width descriptors (w) so the browser can select the optimal size
- * based on viewport width and device pixel ratio.
- */
 export const useResponsiveImageProps = ({
   src,
   width,
@@ -44,17 +32,19 @@ export const useResponsiveImageProps = ({
   quality = 75,
 }: ResponsiveImageOptions) =>
   useMemo(() => {
-    // Find the smallest preset width that can contain the original
+    if (!env.VITE_VERCEL_ENV || env.VITE_VERCEL_ENV === "development")
+      return {
+        src,
+        width,
+        height,
+        sizes,
+        quality,
+      };
     const maxWidth = imageWidths.find((w) => w >= width) ?? imageWidths.at(-1)!;
-
-    // Generate srcSet for all widths up to and including the max
     const applicableWidths = imageWidths.filter((w) => w <= maxWidth);
-
     const srcSet = applicableWidths
       .map((w) => `${getVercelOptimizedUrl(src, w, quality)} ${w}w`)
       .join(", ");
-
-    // Use largest applicable width as the fallback src
     const fallbackWidth = applicableWidths.at(-1)!;
 
     return {
@@ -68,18 +58,10 @@ export const useResponsiveImageProps = ({
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
-  /** Intrinsic width of the source image */
   width: number;
-  /** Intrinsic height of the source image */
   height: number;
   alt: string;
-  /**
-   * The sizes attribute for responsive images.
-   * @default "100vw"
-   * @example "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-   */
   sizes?: string;
-  /** Image quality 1-100 @default 75 */
   quality?: number;
 }
 

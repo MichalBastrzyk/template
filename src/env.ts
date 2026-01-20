@@ -36,6 +36,9 @@ export const env = createEnv({
   clientPrefix: "VITE_",
   client: {
     VITE_APP_TITLE: z.string().min(1).optional(),
+    VITE_VERCEL_ENV: z
+      .enum(["development", "preview", "production"])
+      .optional(),
   },
 
   runtimeEnv: process.env,
