@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestRouteImport } from './routes/test'
+import { Route as ClerkdemoRouteImport } from './routes/clerkdemo'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -33,6 +34,11 @@ const TodosRoute = TodosRouteImport.update({
 const TestRoute = TestRouteImport.update({
   id: '/test',
   path: '/test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClerkdemoRoute = ClerkdemoRouteImport.update({
+  id: '/clerkdemo',
+  path: '/clerkdemo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -103,6 +109,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/clerkdemo': typeof ClerkdemoRoute
   '/test': typeof TestRoute
   '/todos': typeof TodosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/clerkdemo': typeof ClerkdemoRoute
   '/test': typeof TestRoute
   '/todos': typeof TodosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/clerkdemo': typeof ClerkdemoRoute
   '/test': typeof TestRoute
   '/todos': typeof TodosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/clerkdemo'
     | '/test'
     | '/todos'
     | '/dashboard'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/clerkdemo'
     | '/test'
     | '/todos'
     | '/dashboard'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/clerkdemo'
     | '/test'
     | '/todos'
     | '/_authenticated/dashboard'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  ClerkdemoRoute: typeof ClerkdemoRoute
   TestRoute: typeof TestRoute
   TodosRoute: typeof TodosRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/test'
       fullPath: '/test'
       preLoaderRoute: typeof TestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clerkdemo': {
+      id: '/clerkdemo'
+      path: '/clerkdemo'
+      fullPath: '/clerkdemo'
+      preLoaderRoute: typeof ClerkdemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -361,6 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  ClerkdemoRoute: ClerkdemoRoute,
   TestRoute: TestRoute,
   TodosRoute: TodosRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

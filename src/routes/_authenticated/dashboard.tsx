@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { UserButton } from "@/components/clerk/user-button";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -25,6 +26,7 @@ function Dashboard() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/50 p-4">
+      <UserButton />
       <div className="w-full max-w-md space-y-6">
         <Card>
           <CardHeader className="text-center">

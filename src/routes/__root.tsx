@@ -11,29 +11,45 @@ import type { QueryClient } from "@tanstack/react-query";
 
 import type { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import type { AppRouter } from "@/server/api/root";
-import { createServerFn } from "@tanstack/react-start";
+import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth as bauth } from "@/server/auth";
 
 import appCss from "../styles/app.css?url";
+import { authClient } from "@/lib/auth-client";
 
 interface MyRouterContext {
   queryClient: QueryClient;
   trpc: TRPCOptionsProxy<AppRouter>;
 }
 
-const getSessionFn = createServerFn({ method: "GET" }).handler(async () => {
-  const headers = getRequestHeaders();
-  const auth = await bauth.api.getSession({
-    headers,
+const getSession = createIsomorphicFn()
+  .server(async () => {
+    const headers = getRequestHeaders();
+    const auth = await bauth.api.getSession({
+      headers,
+    });
+
+    return auth;
+  })
+  .client(async () => {
+    const auth = authClient.useSession.get();
+
+    if (!auth.isPending || (!auth.isRefetching && auth.data)) return auth.data;
   });
 
-  return auth;
-});
+// const getSessionFn = createServerFn({ method: "GET" }).handler(async () => {
+//   const headers = getRequestHeaders();
+//   const auth = await bauth.api.getSession({
+//     headers,
+//   });
+
+//   return auth;
+// });
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async () => {
-    const auth = await getSessionFn();
+    const auth = await getSession();
 
     return {
       isAuthenticated: Boolean(auth?.user),
